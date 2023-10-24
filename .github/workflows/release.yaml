@@ -75,7 +75,7 @@ jobs:
 
       - name: Sign container image
         run: |
-          cosign sign \
+          cosign sign -y \
             -a "repo=${{ github.repository }}" \
             -a "workflow=${{ github.workflow }}" \
             -a "ref=${{ github.sha }}" \
