@@ -15,7 +15,8 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     outputs:
-      tags: ${{ steps.web-meta.outputs.tags }}
+      tags: ${{ steps.toolkit-meta.outputs.tags }}
+      digest: ${{ steps.build-toolkit.outputs.digest }}
     steps:
       - uses: actions/checkout@v3
 
