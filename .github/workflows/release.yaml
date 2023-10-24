@@ -59,3 +59,20 @@ jobs:
           push: true
           cache-from: ${{ steps.cache.outputs.cache-from }}
           cache-to: ${{ steps.cache.outputs.cache-to }}
+
+  sign:
+    runs-on: ubuntu-22.04
+    outputs:
+      tags: ${{ steps.web-meta.outputs.tags }}
+    steps:
+      - uses: sigstore/cosign-installer@main
+
+      - name: Sign container image
+        run: |
+          cosign sign \
+            -a "repo=${{ github.repository }}" \
+            -a "workflow=${{ github.workflow }}" \
+            -a "ref=${{ github.sha }}" \
+            ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit@${{ jobs.build.outputs.digest }}
+        env:
+          COSIGN_PASSWORD: ""
