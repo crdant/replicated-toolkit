@@ -36,6 +36,7 @@ RUN apt-get update && apt-get install -y kubectl
 
 # final image
 FROM ubuntu:jammy
+LABEL org.opencontainers.image.source https://github.com/crdant/replicated-toolkit
 
 
 ARG USERNAME=replicant
