@@ -65,9 +65,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - build
-    permissions:
-      packages: write
-      id-token: write
+    permissions: write-all
     outputs:
       tags: ${{ steps.web-meta.outputs.tags }}
     steps:
