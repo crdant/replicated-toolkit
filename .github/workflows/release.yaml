@@ -8,10 +8,11 @@ on:
     - '*'
     tags:
     - "v*.*.*"
+
 env:
   REGISTRY: ghcr.io
+
 jobs:
-       
   build:
     runs-on: ubuntu-22.04
     outputs:
@@ -62,6 +63,8 @@ jobs:
 
   sign:
     runs-on: ubuntu-22.04
+    needs:
+      - build
     outputs:
       tags: ${{ steps.web-meta.outputs.tags }}
     steps:
@@ -73,6 +76,6 @@ jobs:
             -a "repo=${{ github.repository }}" \
             -a "workflow=${{ github.workflow }}" \
             -a "ref=${{ github.sha }}" \
-            ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit@${{ jobs.build.outputs.digest }}
+            ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit@${{ needs.build.outputs.digest }}
         env:
           COSIGN_PASSWORD: ""
