@@ -15,7 +15,8 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     outputs:
-      tags: ${{ steps.web-meta.outputs.tags }}
+      tags: ${{ steps.toolkit-meta.outputs.tags }}
+      digest: ${{ steps.build-toolkit.outputs.digest }}
     steps:
       - uses: actions/checkout@v3
 
@@ -29,8 +30,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for web image
-        id: web-meta
+      - name: Extract metadata (tags, labels) for toolkit image
+        id: toolkit-meta
         uses: docker/metadata-action@v4
         with:
           tags: |
@@ -47,13 +48,14 @@ jobs:
         with:
           image: ghcr.io/${{ github.repository }}/cache
 
-      - name: Build web image
-        uses: docker/build-push-action@v4
+      - name: Build toolkit image
+        id: build-toolkit
+        uses: docker/build-push-action@v5
         with:
           context: .
-          tags: ${{ steps.web-meta.outputs.tags }}
-          labels: ${{ steps.web-meta.outputs.labels }}
-          file: ./deploy/Dockerfile.web
+          tags: ${{ steps.toolkit-meta.outputs.tags }}
+          labels: ${{ steps.toolkit-meta.outputs.labels }}
+          file: ./Dockerfile
           push: true
           cache-from: ${{ steps.cache.outputs.cache-from }}
           cache-to: ${{ steps.cache.outputs.cache-to }}
