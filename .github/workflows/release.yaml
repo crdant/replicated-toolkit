@@ -83,10 +83,7 @@ jobs:
       - name: Sign container image
         run: |
           cosign sign -y \
-            -a "repo=${{ github.repository }}" \
-            -a "workflow=${{ github.workflow }}" \
-            -a "ref=${{ github.sha }}" \
-            -a "actor=${{ github.actor }}" \
+            -a "githubWorkflowActor=${{ github.actor }}" \
             ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit@${{ needs.build.outputs.digest }}
         env:
           COSIGN_PASSWORD: ""
