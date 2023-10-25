@@ -86,6 +86,7 @@ jobs:
             -a "repo=${{ github.repository }}" \
             -a "workflow=${{ github.workflow }}" \
             -a "ref=${{ github.sha }}" \
+            -a "actor=${{ github.actor }}" \
             ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit@${{ needs.build.outputs.digest }}
         env:
           COSIGN_PASSWORD: ""
