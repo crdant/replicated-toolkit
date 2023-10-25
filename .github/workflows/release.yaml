@@ -1,13 +1,16 @@
 name: release
 
 on:
+  schedule:
+    - cron:  '20 10 * * *' 
   push:
-    on:
-    -  cron:  '20 10 * * *' 
     branches:
-    - '*'
+      - '*'
     tags:
-    - "v*.*.*"
+      - "v*.*.*"
+  pull_request:
+    branches:
+      - main
 
 env:
   REGISTRY: ghcr.io
