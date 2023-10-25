@@ -68,8 +68,6 @@ jobs:
     permissions: 
       packages: write
       id-token: write
-    outputs:
-      tags: ${{ steps.web-meta.outputs.tags }}
     steps:
       - uses: sigstore/cosign-installer@v3.1.2
 
