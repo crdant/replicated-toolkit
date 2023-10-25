@@ -86,7 +86,8 @@ jobs:
 
       - name: Attach SBOM to image
         run: |
-          cosign attach sbom --sbom ${{ github.repository }}-provide-sbom-generate-sbom.spdx \
+          ls -la
+          cosign attach sbom --sbom crdant-replicated-toolkit.spdx.json \
             ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit@${{ needs.build.outputs.digest }}
         env:
           COSIGN_PASSWORD: ""
@@ -94,6 +95,7 @@ jobs:
       - name: Sign SBOM
         run: |
           cosign sign -y \
+            --attachment sbom ${{ github.repository }}-provide-sbom-generate-sbom.spdx.json \
             -a "githubWorkflowActor=${{ github.actor }}" \
             ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit@${{ needs.build.outputs.digest }}
         env:
