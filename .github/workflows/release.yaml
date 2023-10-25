@@ -91,11 +91,20 @@ jobs:
         env:
           COSIGN_PASSWORD: ""
 
+      - name: Sign SBOM
+        run: |
+          cosign sign -y \
+            -a "githubWorkflowActor=${{ github.actor }}" \
+            ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit@${{ needs.build.outputs.digest }}
+        env:
+          COSIGN_PASSWORD: ""
+
+
   sign:
     runs-on: ubuntu-22.04
     needs:
       - build
-      - generate-sbom
+      - provide-sbom
     permissions: 
       packages: write
       id-token: write
