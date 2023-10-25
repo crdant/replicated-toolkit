@@ -61,10 +61,41 @@ jobs:
           cache-from: ${{ steps.cache.outputs.cache-from }}
           cache-to: ${{ steps.cache.outputs.cache-to }}
 
+  provide-sbom:
+    runs-on: ubuntu-22.04
+    needs:
+      - build
+    permissions: 
+      packages: write
+      id-token: write
+    steps:
+      - uses: sigstore/cosign-installer@v3.1.2
+
+      - name: Login to GitHub Container Registry for cosign
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate SBOM
+        id: generate-sbom
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit
+
+      - name: Attach SBOM to image
+        run: |
+          cosign attach sbom --sbom ${{ github.repository }}-provide-sbom-generate-sbom.spdx \
+            ${{ env.REGISTRY }}/${{ github.actor }}/replicated-toolkit@${{ needs.build.outputs.digest }}
+        env:
+          COSIGN_PASSWORD: ""
+
   sign:
     runs-on: ubuntu-22.04
     needs:
       - build
+      - generate-sbom
     permissions: 
       packages: write
       id-token: write
